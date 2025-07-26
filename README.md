@@ -1,4 +1,4 @@
-- HTTP Request 요청 처리
+## HTTP Request 요청 처리
 ### 1. 서버 Socket 생성
   ``` Java
     try (ServerSocket serverSocket = new ServerSocket(port)) {
