@@ -5,11 +5,11 @@
         logger.info("[CustomWebApplicationServer] started {} port.", port);
 
         ...
-        
         Socket clientSocket;
         
         while ((clientSocket = serverSocket.accept()) != null) {
           ...
+          executorService.execute(new ClientRequestHandler(clientSocket));
         }
     }
   ```
@@ -17,7 +17,7 @@
   - serverSocket.accept()에서 요청이 들어올 때까지 스레드는 블로킹된 상태로 있음.
 
 ### 2. Client의 Http 요청 발생
-  ``` Http Request
+  ```
     GET /calculate?operand1=11&operator=*&operand2=55 HTTP/1.1
     Host: localhost:8080
     User-Agent: curl/7.64.1
@@ -27,8 +27,12 @@
     - TCP 3-way handshake 진행
   - 서버가 연결 확인(serverSocket.accept())
     - accpet()가 블로킹 상태에서 Socket을 리턴함.
+  - Http 요청을 처리할 로직 수행
+    ``` java
+        executorService.execute(new ClientRequestHandler(clientSocket));
+    ```
 
-### 3. Http 요청 수신 및 파싱
+### 3. Http 요청 수신 및 파싱(로직 수행)
   - 서버가 클라이언트 소켓의 InputStream 확보
   ``` java
     InputStream in = clientSocket.getInputStream();
